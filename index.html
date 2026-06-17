@@ -50,7 +50,11 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .error-banner { background: var(--red-light); border: 0.5px solid #F09595; border-radius: var(--radius-md); padding: 12px 16px; font-size: 13px; color: var(--red); margin-bottom: 20px; display: flex; align-items: flex-start; gap: 8px; }
   .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; color: var(--text-faint); text-transform: uppercase; margin-bottom: 12px; }
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 28px; }
+  .kpi-grid { display: flex; flex-direction: column; gap: 6px; margin-bottom: 28px; }
+  .kpi-row { display: flex; flex-direction: column; gap: 6px; }
+  .kpi-row-label { font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-faint); padding: 4px 0 2px; }
+  .kpi-row-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+  .kpi-grid > .kpi-row + .kpi-row { margin-top: 10px; }
   .kpi-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 16px; }
   .kpi-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
   .kpi-value { font-size: 22px; font-weight: 500; line-height: 1; margin-bottom: 6px; }
@@ -177,17 +181,19 @@ let currentData = [];
 let chartOpen = null, chartCtor = null;
 
 const columns = [
-  { key: 'tag',          label: 'Tag / Alerte',  fmt: v => v || '—',      cls: 'tag-cell' },
-  { key: 'requests',     label: 'Envoyés',        fmt: fmtNum,             cls: 'num' },
-  { key: 'delivered',    label: 'Délivrés',       fmt: fmtNum,             cls: 'num' },
-  { key: 'delivRate',    label: 'Délivrabilité',  fmt: fmtPct,             cls: 'num' },
-  { key: 'openRate',     label: 'Ouverture',      fmt: fmtPct,             cls: 'num' },
-  { key: 'ctor',         label: 'CTOR',           fmt: fmtPct,             cls: 'num' },
-  { key: 'hardBounces',  label: 'Bounce hard',    fmt: fmtNum,             cls: 'num' },
-  { key: 'bounceRate',   label: 'Bounce hard %',  fmt: fmtPct,             cls: 'num' },
-  { key: 'unsubscribes', label: 'Désabos',        fmt: fmtNum,             cls: 'num' },
-  { key: 'unsubRate',    label: 'Désabo %',       fmt: fmtPct,             cls: 'num' },
-  { key: 'spamReports',  label: 'Plaintes spam',  fmt: fmtNum,             cls: 'num' },
+  { key: 'tag',          label: 'Tag / Alerte',     fmt: v => v || '—', cls: 'tag-cell' },
+  { key: 'requests',     label: 'Envoyés',           fmt: fmtNum,        cls: 'num' },
+  { key: 'delivered',    label: 'Délivrés',          fmt: fmtNum,        cls: 'num' },
+  { key: 'delivRate',    label: 'Délivrabilité',     fmt: fmtPct,        cls: 'num' },
+  { key: 'uniqueOpens',  label: 'Ouvreurs uniques',  fmt: fmtNum,        cls: 'num' },
+  { key: 'openRate',     label: 'Ouverture %',       fmt: fmtPct,        cls: 'num' },
+  { key: 'uniqueClicks', label: 'Cliqueurs uniques', fmt: fmtNum,        cls: 'num' },
+  { key: 'ctor',         label: 'CTOR',              fmt: fmtPct,        cls: 'num' },
+  { key: 'hardBounces',  label: 'Bounce hard',       fmt: fmtNum,        cls: 'num' },
+  { key: 'bounceRate',   label: 'Bounce hard %',     fmt: fmtPct,        cls: 'num' },
+  { key: 'unsubscribes', label: 'Désabos',           fmt: fmtNum,        cls: 'num' },
+  { key: 'unsubRate',    label: 'Désabo %',          fmt: fmtPct,        cls: 'num' },
+  { key: 'spamReports',  label: 'Plaintes spam',     fmt: fmtNum,        cls: 'num' },
 ];
 
 function fmtNum(v) {
@@ -256,17 +262,36 @@ function clearError() { document.getElementById('error-container').innerHTML = '
 function renderKPIs(current, previous) {
   const cm = calcMetrics(current);
   const pm = previous ? calcMetrics(previous) : null;
-  const kpis = [
-    { label: 'Envoyés',          val: fmtNum(cm.requests),     delta: pm ? cm.requests - pm.requests : null,         abs: true },
-    { label: 'Délivrés',         val: fmtNum(cm.delivered),    delta: pm ? cm.delivered - pm.delivered : null,       abs: true },
-    { label: 'Délivrabilité',    val: fmtPct(cm.delivRate),    delta: pm ? cm.delivRate - pm.delivRate : null },
-    { label: "Taux d'ouverture", val: fmtPct(cm.openRate),     delta: pm ? cm.openRate - pm.openRate : null },
-    { label: 'CTOR',             val: fmtPct(cm.ctor),         delta: pm ? cm.ctor - pm.ctor : null },
-    { label: 'Bounce hard',      val: fmtNum(cm.hardBounces),  delta: pm ? cm.hardBounces - pm.hardBounces : null,   abs: true, invert: true },
-    { label: 'Désabonnements',   val: fmtNum(cm.unsubscribes), delta: pm ? cm.unsubscribes - pm.unsubscribes : null, abs: true, invert: true },
-    { label: 'Plaintes spam',    val: fmtNum(cm.spamReports),  delta: pm ? cm.spamReports - pm.spamReports : null,   abs: true, invert: true },
+
+  const rows = [
+    {
+      title: 'Performance d'envoi',
+      kpis: [
+        { label: 'Envoyés',          val: fmtNum(cm.requests),    delta: pm ? cm.requests - pm.requests : null,       abs: true },
+        { label: 'Tx délivrabilité', val: fmtPct(cm.delivRate),   delta: pm ? cm.delivRate - pm.delivRate : null },
+        { label: "Tx d'ouverture",   val: fmtPct(cm.openRate),    delta: pm ? cm.openRate - pm.openRate : null },
+        { label: 'CTOR',             val: fmtPct(cm.ctor),        delta: pm ? cm.ctor - pm.ctor : null },
+      ]
+    },
+    {
+      title: 'Engagement',
+      kpis: [
+        { label: 'Délivrés',          val: fmtNum(cm.delivered),    delta: pm ? cm.delivered - pm.delivered : null,       abs: true },
+        { label: 'Ouvreurs uniques',  val: fmtNum(cm.uniqueOpens),  delta: pm ? cm.uniqueOpens - pm.uniqueOpens : null,   abs: true },
+        { label: 'Cliqueurs uniques', val: fmtNum(cm.uniqueClicks), delta: pm ? cm.uniqueClicks - pm.uniqueClicks : null, abs: true },
+      ]
+    },
+    {
+      title: 'Qualité de base',
+      kpis: [
+        { label: 'Bounce hard',    val: fmtNum(cm.hardBounces),  delta: pm ? cm.hardBounces - pm.hardBounces : null,   abs: true, invert: true },
+        { label: 'Désabonnements', val: fmtNum(cm.unsubscribes), delta: pm ? cm.unsubscribes - pm.unsubscribes : null, abs: true, invert: true },
+        { label: 'Plaintes spam',  val: fmtNum(cm.spamReports),  delta: pm ? cm.spamReports - pm.spamReports : null,   abs: true, invert: true },
+      ]
+    },
   ];
-  document.getElementById('kpi-grid').innerHTML = kpis.map(k => {
+
+  function kpiCard(k) {
     let deltaHtml = '';
     if (k.delta != null) {
       const positive = k.invert ? k.delta < 0 : k.delta > 0;
@@ -278,7 +303,14 @@ function renderKPIs(current, previous) {
       deltaHtml = `<div class="kpi-delta ${cls}">${arrow} ${dStr} vs période préc.</div>`;
     }
     return `<div class="kpi-card"><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.val}</div>${deltaHtml}</div>`;
-  }).join('');
+  }
+
+  document.getElementById('kpi-grid').innerHTML = rows.map(row => `
+    <div class="kpi-row">
+      <div class="kpi-row-label">${row.title}</div>
+      <div class="kpi-row-cards">${row.kpis.map(kpiCard).join('')}</div>
+    </div>
+  `).join('');
 }
 
 function renderCharts(dailyData) {
@@ -352,23 +384,10 @@ function renderTable(rows) {
 }
 
 const SENDER_FILTER = 'offres@alertes.cadremploi.fr';
-const TAG_FILTER = 'CE';
+const KNOWN_TAGS = ['alerte_email_CE','alerte_rebond_CE','alerte_0resultat_CE','alerte_refresh20_CE'];
 
 async function fetchTagsFromEvents(startDate, endDate) {
-  const tags = new Set();
-  let offset = 0;
-  const limit = 100;
-  let hasMore = true;
-  while (hasMore) {
-    let url = `/smtp/statistics/events?startDate=${startDate}&endDate=${endDate}&limit=${limit}&offset=${offset}`;
-    const data = await brevoGet(url);
-    const events = data.events || [];
-    events.forEach(e => { if (e.tag && e.tag.includes(TAG_FILTER)) tags.add(e.tag); });
-    if (events.length < limit) hasMore = false;
-    else offset += limit;
-    if (offset >= 500) break;
-  }
-  return Array.from(tags);
+  return KNOWN_TAGS;
 }
 
 async function loadDashboard(startDate, endDate) {
