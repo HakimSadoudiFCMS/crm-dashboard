@@ -360,7 +360,7 @@ async function fetchTagsFromEvents(startDate, endDate) {
   const limit = 100;
   let hasMore = true;
   while (hasMore) {
-    let url = `/smtp/statistics/events?startDate=${startDate}&endDate=${endDate}&limit=${limit}&offset=${offset}&email=${encodeURIComponent(SENDER_FILTER)}`;
+    let url = `/smtp/statistics/events?startDate=${startDate}&endDate=${endDate}&limit=${limit}&offset=${offset}`;
     const data = await brevoGet(url);
     const events = data.events || [];
     events.forEach(e => { if (e.tag && e.tag.includes(TAG_FILTER)) tags.add(e.tag); });
