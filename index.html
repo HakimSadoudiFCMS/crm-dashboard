@@ -7,263 +7,79 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #f7f7f5;
-    --surface: #ffffff;
-    --surface2: #f2f2ef;
-    --border: rgba(0,0,0,0.1);
-    --border-md: rgba(0,0,0,0.18);
-    --text: #1a1a18;
-    --text-muted: #6b6b67;
-    --text-faint: #9b9b96;
-    --accent: #1a1a18;
-    --blue: #185FA5;
-    --blue-light: #E6F1FB;
-    --green: #3B6D11;
-    --green-light: #EAF3DE;
-    --red: #A32D2D;
-    --red-light: #FCEBEB;
-    --amber: #854F0B;
-    --amber-light: #FAEEDA;
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 14px;
+    --bg: #f7f7f5; --surface: #ffffff; --surface2: #f2f2ef;
+    --border: rgba(0,0,0,0.1); --border-md: rgba(0,0,0,0.18);
+    --text: #1a1a18; --text-muted: #6b6b67; --text-faint: #9b9b96;
+    --accent: #1a1a18; --blue: #185FA5; --blue-light: #E6F1FB;
+    --green: #3B6D11; --green-light: #EAF3DE;
+    --red: #A32D2D; --red-light: #FCEBEB;
+    --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px;
   }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 14px;
-    line-height: 1.5;
-    min-height: 100vh;
-  }
-
-  /* HEADER */
-  .header {
-    background: var(--surface);
-    border-bottom: 0.5px solid var(--border);
-    padding: 0 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 56px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .header-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .header-logo {
-    width: 28px; height: 28px;
-    background: var(--accent);
-    border-radius: var(--radius-sm);
-    display: flex; align-items: center; justify-content: center;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+  .header { background: var(--surface); border-bottom: 0.5px solid var(--border); padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+  .header-brand { display: flex; align-items: center; gap: 10px; }
+  .header-logo { width: 28px; height: 28px; background: var(--accent); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; }
   .header-logo svg { width: 14px; height: 14px; fill: white; }
   .header-title { font-size: 14px; font-weight: 500; }
-  .header-sub { font-size: 12px; color: var(--text-muted); margin-left: 8px; }
-
-  /* SETUP */
-  .setup-screen {
-    max-width: 480px;
-    margin: 80px auto;
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 36px 40px;
-  }
+  .setup-screen { max-width: 480px; margin: 80px auto; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 36px 40px; }
   .setup-screen h1 { font-size: 18px; font-weight: 500; margin-bottom: 6px; }
   .setup-screen p { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.6; }
   .field { margin-bottom: 18px; }
   .field label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.02em; }
-  .field input {
-    width: 100%; padding: 9px 12px;
-    border: 0.5px solid var(--border-md);
-    border-radius: var(--radius-sm);
-    font-size: 13px; color: var(--text);
-    background: var(--surface);
-    outline: none; transition: border-color 0.15s;
-    font-family: inherit;
-  }
+  .field input { width: 100%; padding: 9px 12px; border: 0.5px solid var(--border-md); border-radius: var(--radius-sm); font-size: 13px; color: var(--text); background: var(--surface); outline: none; transition: border-color 0.15s; font-family: inherit; }
   .field input:focus { border-color: var(--accent); }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .btn-primary {
-    width: 100%; padding: 10px;
-    background: var(--accent);
-    color: white; border: none;
-    border-radius: var(--radius-sm);
-    font-size: 13px; font-weight: 500;
-    cursor: pointer; margin-top: 8px;
-    transition: opacity 0.15s;
-    font-family: inherit;
-  }
+  .btn-primary { width: 100%; padding: 10px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 8px; transition: opacity 0.15s; font-family: inherit; }
   .btn-primary:hover { opacity: 0.85; }
-  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
-  .setup-note {
-    font-size: 11px; color: var(--text-faint);
-    margin-top: 16px; text-align: center; line-height: 1.6;
-  }
+  .setup-note { font-size: 11px; color: var(--text-faint); margin-top: 16px; text-align: center; line-height: 1.6; }
   .setup-note a { color: var(--blue); text-decoration: none; }
-
-  /* MAIN LAYOUT */
   .main { max-width: 1200px; margin: 0 auto; padding: 28px 32px; }
-
-  /* TOOLBAR */
-  .toolbar {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
-  }
-  .toolbar-left { display: flex; align-items: center; gap: 10px; }
+  .toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+  .toolbar-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .toolbar-dates { display: flex; align-items: center; gap: 8px; }
-  .toolbar-dates input {
-    padding: 7px 10px;
-    border: 0.5px solid var(--border-md);
-    border-radius: var(--radius-sm);
-    font-size: 13px; color: var(--text);
-    background: var(--surface); outline: none;
-    font-family: inherit;
-  }
+  .toolbar-dates input { padding: 7px 10px; border: 0.5px solid var(--border-md); border-radius: var(--radius-sm); font-size: 13px; color: var(--text); background: var(--surface); outline: none; font-family: inherit; }
   .toolbar-dates span { font-size: 13px; color: var(--text-muted); }
-  .btn-load {
-    padding: 7px 16px;
-    background: var(--accent); color: white;
-    border: none; border-radius: var(--radius-sm);
-    font-size: 13px; font-weight: 500;
-    cursor: pointer; transition: opacity 0.15s;
-    font-family: inherit;
-    display: flex; align-items: center; gap: 6px;
-  }
+  .btn-load { padding: 7px 16px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; font-family: inherit; display: flex; align-items: center; gap: 6px; }
   .btn-load:hover { opacity: 0.85; }
   .btn-load:disabled { opacity: 0.4; cursor: not-allowed; }
-  .btn-secondary {
-    padding: 7px 12px;
-    background: var(--surface); color: var(--text-muted);
-    border: 0.5px solid var(--border-md); border-radius: var(--radius-sm);
-    font-size: 12px; cursor: pointer; transition: background 0.15s;
-    font-family: inherit;
-  }
+  .btn-secondary { padding: 7px 12px; background: var(--surface); color: var(--text-muted); border: 0.5px solid var(--border-md); border-radius: var(--radius-sm); font-size: 12px; cursor: pointer; transition: background 0.15s; font-family: inherit; }
   .btn-secondary:hover { background: var(--surface2); }
-
-  /* LOADING */
-  .loading {
-    text-align: center; padding: 80px 0;
-    color: var(--text-muted); font-size: 13px;
-  }
-  .spinner {
-    width: 24px; height: 24px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin: 0 auto 12px;
-  }
+  .loading { text-align: center; padding: 80px 0; color: var(--text-muted); font-size: 13px; }
+  .spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 12px; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ERROR */
-  .error-banner {
-    background: var(--red-light); border: 0.5px solid #F09595;
-    border-radius: var(--radius-md); padding: 12px 16px;
-    font-size: 13px; color: var(--red); margin-bottom: 20px;
-    display: flex; align-items: flex-start; gap: 8px;
-  }
-
-  /* SECTION TITLES */
-  .section-label {
-    font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
-    color: var(--text-faint); text-transform: uppercase; margin-bottom: 12px;
-  }
-
-  /* KPI GRID */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px; margin-bottom: 28px;
-  }
-  .kpi-card {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 16px;
-  }
+  .error-banner { background: var(--red-light); border: 0.5px solid #F09595; border-radius: var(--radius-md); padding: 12px 16px; font-size: 13px; color: var(--red); margin-bottom: 20px; display: flex; align-items: flex-start; gap: 8px; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; color: var(--text-faint); text-transform: uppercase; margin-bottom: 12px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 28px; }
+  .kpi-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 16px; }
   .kpi-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
-  .kpi-value { font-size: 24px; font-weight: 500; line-height: 1; margin-bottom: 6px; }
-  .kpi-delta {
-    font-size: 12px; display: flex; align-items: center; gap: 3px;
-  }
+  .kpi-value { font-size: 22px; font-weight: 500; line-height: 1; margin-bottom: 6px; }
+  .kpi-delta { font-size: 12px; display: flex; align-items: center; gap: 3px; }
   .kpi-delta.up { color: var(--green); }
   .kpi-delta.down { color: var(--red); }
   .kpi-delta.neutral { color: var(--text-faint); }
-
-  /* CHARTS ROW */
-  .charts-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px; margin-bottom: 28px;
-  }
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
   @media (max-width: 700px) { .charts-row { grid-template-columns: 1fr; } }
-  .chart-card {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 20px;
-  }
+  .chart-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 20px; }
   .chart-card-title { font-size: 13px; font-weight: 500; margin-bottom: 16px; color: var(--text); }
   .chart-wrap { position: relative; width: 100%; height: 180px; }
-
-  /* TABLE */
-  .table-card {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-  }
-  .table-header {
-    padding: 16px 20px;
-    display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 0.5px solid var(--border);
-  }
+  .table-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+  .table-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border); }
   .table-header-title { font-size: 13px; font-weight: 500; }
   .table-count { font-size: 12px; color: var(--text-muted); }
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead th {
-    padding: 10px 16px;
-    text-align: left; font-size: 11px; font-weight: 500;
-    color: var(--text-muted); letter-spacing: 0.03em;
-    border-bottom: 0.5px solid var(--border);
-    white-space: nowrap; cursor: pointer;
-    user-select: none; background: var(--surface2);
-  }
+  thead th { padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.03em; border-bottom: 0.5px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; background: var(--surface2); }
   thead th:hover { color: var(--text); }
   thead th.sorted { color: var(--text); }
-  .sort-arrow { margin-left: 4px; opacity: 0.5; }
   tbody tr { border-bottom: 0.5px solid var(--border); transition: background 0.1s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--surface2); }
   tbody td { padding: 11px 16px; color: var(--text); white-space: nowrap; }
-  td.tag-cell { font-weight: 500; max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+  td.tag-cell { font-weight: 500; max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
   td.num { font-variant-numeric: tabular-nums; }
-  td.pct { font-variant-numeric: tabular-nums; }
-
-  /* EMPTY STATE */
-  .empty-state {
-    text-align: center; padding: 60px 20px;
-    color: var(--text-muted); font-size: 13px;
-  }
-
-  /* PERIOD BADGE */
-  .period-badge {
-    font-size: 12px; color: var(--text-muted);
-    background: var(--surface2);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 4px 10px;
-  }
+  .period-badge { font-size: 12px; color: var(--text-muted); background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 4px 10px; }
+  .info-banner { background: var(--blue-light); border: 0.5px solid #B5D4F4; border-radius: var(--radius-md); padding: 10px 14px; font-size: 12px; color: #185FA5; margin-bottom: 16px; }
 </style>
 </head>
 <body>
@@ -274,22 +90,19 @@
       <svg viewBox="0 0 16 16"><path d="M2 3h12v2H2zm0 4h8v2H2zm0 4h10v2H2z"/></svg>
     </div>
     <span class="header-title">Dashboard alertes CRM</span>
-    <span class="header-sub" id="header-sub"></span>
   </div>
   <div id="header-actions"></div>
 </header>
 
-<!-- SETUP -->
 <div id="setup-screen" class="setup-screen">
   <h1>Configurer la connexion</h1>
-  <p>Renseigne ta clé API Brevo et la période à analyser. La clé est stockée uniquement dans ton navigateur (localStorage).</p>
-
+  <p>Renseigne ta clé API Brevo et la période à analyser. La clé est stockée uniquement dans ton navigateur.</p>
   <div class="field">
-    <label>Clé API Brevo</label>
+    <label>Clé API Brevo (commence par xkeysib-)</label>
     <input type="password" id="input-apikey" placeholder="xkeysib-…" autocomplete="off">
   </div>
   <div class="field">
-    <label>Période</label>
+    <label>Période (max 90 jours)</label>
     <div class="field-row">
       <input type="date" id="input-start">
       <input type="date" id="input-end">
@@ -302,10 +115,8 @@
   </p>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dashboard" style="display:none">
   <div class="main">
-
     <div class="toolbar">
       <div class="toolbar-left">
         <div class="toolbar-dates">
@@ -313,26 +124,22 @@
           <span>→</span>
           <input type="date" id="tb-end">
         </div>
-        <button class="btn-load" id="btn-reload">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M14 8A6 6 0 1 1 8 2v2a4 4 0 1 0 4 4h2z"/><path d="M8 0l3 3-3 3V0z"/></svg>
-          Actualiser
-        </button>
+        <button class="btn-load" id="btn-reload">Actualiser</button>
         <span class="period-badge" id="period-badge"></span>
       </div>
       <button class="btn-secondary" id="btn-reset">Changer de clé API</button>
     </div>
 
     <div id="error-container"></div>
+
     <div id="loading" style="display:none">
       <div class="loading"><div class="spinner"></div>Chargement des données Brevo…</div>
     </div>
 
     <div id="content" style="display:none">
-      <!-- KPIs -->
       <div class="section-label">Vue globale</div>
       <div class="kpi-grid" id="kpi-grid"></div>
 
-      <!-- Charts -->
       <div class="charts-row">
         <div class="chart-card">
           <div class="chart-card-title">Taux d'ouverture — évolution</div>
@@ -344,12 +151,12 @@
         </div>
       </div>
 
-      <!-- Table -->
       <div class="table-card">
         <div class="table-header">
           <span class="table-header-title">Détail par campagne (tag)</span>
           <span class="table-count" id="table-count"></span>
         </div>
+        <div id="table-info"></div>
         <div class="table-wrap">
           <table>
             <thead id="table-head"></thead>
@@ -358,12 +165,11 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
 <script>
-const BREVO_BASE = 'https://api.brevo.com/v3';
+const BREVO = 'https://api.brevo.com/v3';
 let apiKey = '';
 let sortCol = 'requests';
 let sortDir = -1;
@@ -371,17 +177,17 @@ let currentData = [];
 let chartOpen = null, chartCtor = null;
 
 const columns = [
-  { key: 'tag',         label: 'Tag / Alerte',   fmt: v => v || '—',             cls: 'tag-cell' },
-  { key: 'requests',    label: 'Envoyés',         fmt: v => fmtNum(v),            cls: 'num' },
-  { key: 'delivered',   label: 'Délivrés',        fmt: v => fmtNum(v),            cls: 'num' },
-  { key: 'delivRate',   label: 'Délivrabilité',   fmt: v => fmtPct(v),            cls: 'pct' },
-  { key: 'openRate',    label: 'Ouverture',        fmt: v => fmtPct(v),            cls: 'pct' },
-  { key: 'ctor',        label: 'CTOR',             fmt: v => fmtPct(v),            cls: 'pct' },
-  { key: 'hardBounces', label: 'Bounce hard',      fmt: v => fmtNum(v),            cls: 'num' },
-  { key: 'bounceRate',  label: 'Bounce hard %',    fmt: v => fmtPct(v),            cls: 'pct' },
-  { key: 'unsubscribes',label: 'Désabos',          fmt: v => fmtNum(v),            cls: 'num' },
-  { key: 'unsubRate',   label: 'Désabo %',         fmt: v => fmtPct(v),            cls: 'pct' },
-  { key: 'spamReports', label: 'Plaintes spam',    fmt: v => fmtNum(v),            cls: 'num' },
+  { key: 'tag',          label: 'Tag / Alerte',  fmt: v => v || '—',      cls: 'tag-cell' },
+  { key: 'requests',     label: 'Envoyés',        fmt: fmtNum,             cls: 'num' },
+  { key: 'delivered',    label: 'Délivrés',       fmt: fmtNum,             cls: 'num' },
+  { key: 'delivRate',    label: 'Délivrabilité',  fmt: fmtPct,             cls: 'num' },
+  { key: 'openRate',     label: 'Ouverture',      fmt: fmtPct,             cls: 'num' },
+  { key: 'ctor',         label: 'CTOR',           fmt: fmtPct,             cls: 'num' },
+  { key: 'hardBounces',  label: 'Bounce hard',    fmt: fmtNum,             cls: 'num' },
+  { key: 'bounceRate',   label: 'Bounce hard %',  fmt: fmtPct,             cls: 'num' },
+  { key: 'unsubscribes', label: 'Désabos',        fmt: fmtNum,             cls: 'num' },
+  { key: 'unsubRate',    label: 'Désabo %',       fmt: fmtPct,             cls: 'num' },
+  { key: 'spamReports',  label: 'Plaintes spam',  fmt: fmtNum,             cls: 'num' },
 ];
 
 function fmtNum(v) {
@@ -392,15 +198,7 @@ function fmtPct(v) {
   if (v == null || isNaN(v)) return '—';
   return (Math.round(v * 1000) / 10).toFixed(1) + ' %';
 }
-function fmtDelta(v) {
-  if (v == null || isNaN(v)) return null;
-  const sign = v >= 0 ? '+' : '';
-  return sign + (Math.round(v * 1000) / 10).toFixed(1) + ' %';
-}
-
-function dateStr(d) {
-  return d.toISOString().split('T')[0];
-}
+function dateStr(d) { return d.toISOString().split('T')[0]; }
 
 function defaultDates() {
   const end = new Date();
@@ -409,115 +207,77 @@ function defaultDates() {
   return { start: dateStr(start), end: dateStr(end) };
 }
 
+function shiftPeriod(start, end) {
+  const days = Math.round((new Date(end) - new Date(start)) / 86400000) + 1;
+  const s = new Date(start); s.setDate(s.getDate() - days);
+  const e = new Date(end); e.setDate(e.getDate() - days);
+  return { start: dateStr(s), end: dateStr(e) };
+}
+
 async function brevoGet(path) {
-  const r = await fetch(BREVO_BASE + path, {
+  const r = await fetch(BREVO + path, {
     headers: { 'api-key': apiKey, 'Accept': 'application/json' }
   });
   if (!r.ok) {
     const body = await r.json().catch(() => ({}));
-    throw new Error(body.message || `Erreur API (${r.status})`);
+    throw new Error(body.message || `Erreur API ${r.status}`);
   }
   return r.json();
 }
 
-async function fetchStats(startDate, endDate, tag = null) {
-  let url = `/smtp/statistics/aggregatedReport?startDate=${startDate}&endDate=${endDate}`;
-  if (tag) url += `&tag=${encodeURIComponent(tag)}`;
-  return brevoGet(url);
-}
-
-async function fetchEvents(startDate, endDate) {
-  const url = `/smtp/statistics/eventsReport?startDate=${startDate}&endDate=${endDate}&limit=100&offset=0`;
-  return brevoGet(url);
-}
-
-async function fetchTags(startDate, endDate) {
-  const data = await fetchEvents(startDate, endDate);
-  const tags = new Set();
-  (data.events || []).forEach(e => { if (e.tag) tags.add(e.tag); });
-  return Array.from(tags);
-}
-
-async function fetchDailyStats(startDate, endDate) {
-  const url = `/smtp/statistics/reports?startDate=${startDate}&endDate=${endDate}&aggregation=day`;
-  return brevoGet(url);
-}
-
-function calcMetrics(s) {
+function calcMetrics(s, tag) {
   const requests = s.requests || 0;
   const delivered = s.delivered || 0;
   const opens = s.uniqueOpens || s.opens || 0;
   const clicks = s.uniqueClicks || s.clicks || 0;
   return {
+    tag: tag || null,
     requests,
     delivered,
-    delivRate: requests > 0 ? delivered / requests : null,
-    openRate: delivered > 0 ? opens / delivered : null,
-    ctor: opens > 0 ? clicks / opens : null,
-    hardBounces: s.hardBounces || 0,
-    bounceRate: requests > 0 ? (s.hardBounces || 0) / requests : null,
+    delivRate:    requests > 0  ? delivered / requests  : null,
+    openRate:     delivered > 0 ? opens / delivered     : null,
+    ctor:         opens > 0     ? clicks / opens        : null,
+    hardBounces:  s.hardBounces  || 0,
+    bounceRate:   requests > 0  ? (s.hardBounces || 0) / requests : null,
     unsubscribes: s.unsubscribes || 0,
-    unsubRate: delivered > 0 ? (s.unsubscribes || 0) / delivered : null,
-    spamReports: s.spamReports || 0,
-    uniqueOpens: opens,
+    unsubRate:    delivered > 0 ? (s.unsubscribes || 0) / delivered : null,
+    spamReports:  s.spamReports  || 0,
+    uniqueOpens:  opens,
     uniqueClicks: clicks,
   };
-}
-
-function daysBetween(start, end) {
-  const s = new Date(start), e = new Date(end);
-  return Math.round((e - s) / 86400000) + 1;
-}
-
-function shiftPeriod(start, end) {
-  const days = daysBetween(start, end);
-  const s = new Date(start);
-  s.setDate(s.getDate() - days);
-  const e = new Date(end);
-  e.setDate(e.getDate() - days);
-  return { start: dateStr(s), end: dateStr(e) };
 }
 
 function showError(msg) {
   document.getElementById('error-container').innerHTML =
     `<div class="error-banner"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="flex-shrink:0;margin-top:1px"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 11a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm.75-3.75h-1.5l-.25-5h2l-.25 5z"/></svg>${msg}</div>`;
 }
-function clearError() {
-  document.getElementById('error-container').innerHTML = '';
-}
+function clearError() { document.getElementById('error-container').innerHTML = ''; }
 
 function renderKPIs(current, previous) {
   const cm = calcMetrics(current);
   const pm = previous ? calcMetrics(previous) : null;
-
   const kpis = [
-    { label: 'Envoyés',         val: fmtNum(cm.requests),   delta: pm ? cm.requests - pm.requests : null, abs: true },
-    { label: 'Délivrés',        val: fmtNum(cm.delivered),  delta: pm ? cm.delivered - pm.delivered : null, abs: true },
-    { label: 'Délivrabilité',   val: fmtPct(cm.delivRate),  delta: pm ? cm.delivRate - pm.delivRate : null },
-    { label: "Taux d'ouverture",val: fmtPct(cm.openRate),   delta: pm ? cm.openRate - pm.openRate : null },
-    { label: 'CTOR',            val: fmtPct(cm.ctor),       delta: pm ? cm.ctor - pm.ctor : null },
-    { label: 'Bounce hard',     val: fmtNum(cm.hardBounces),delta: pm ? cm.hardBounces - pm.hardBounces : null, abs: true, invert: true },
-    { label: 'Désabonnements',  val: fmtNum(cm.unsubscribes),delta: pm ? cm.unsubscribes - pm.unsubscribes : null, abs: true, invert: true },
-    { label: 'Plaintes spam',   val: fmtNum(cm.spamReports),delta: pm ? cm.spamReports - pm.spamReports : null, abs: true, invert: true },
+    { label: 'Envoyés',          val: fmtNum(cm.requests),     delta: pm ? cm.requests - pm.requests : null,         abs: true },
+    { label: 'Délivrés',         val: fmtNum(cm.delivered),    delta: pm ? cm.delivered - pm.delivered : null,       abs: true },
+    { label: 'Délivrabilité',    val: fmtPct(cm.delivRate),    delta: pm ? cm.delivRate - pm.delivRate : null },
+    { label: "Taux d'ouverture", val: fmtPct(cm.openRate),     delta: pm ? cm.openRate - pm.openRate : null },
+    { label: 'CTOR',             val: fmtPct(cm.ctor),         delta: pm ? cm.ctor - pm.ctor : null },
+    { label: 'Bounce hard',      val: fmtNum(cm.hardBounces),  delta: pm ? cm.hardBounces - pm.hardBounces : null,   abs: true, invert: true },
+    { label: 'Désabonnements',   val: fmtNum(cm.unsubscribes), delta: pm ? cm.unsubscribes - pm.unsubscribes : null, abs: true, invert: true },
+    { label: 'Plaintes spam',    val: fmtNum(cm.spamReports),  delta: pm ? cm.spamReports - pm.spamReports : null,   abs: true, invert: true },
   ];
-
   document.getElementById('kpi-grid').innerHTML = kpis.map(k => {
     let deltaHtml = '';
     if (k.delta != null) {
-      const up = k.abs ? k.delta > 0 : k.delta > 0;
-      const positive = k.invert ? !up : up;
+      const positive = k.invert ? k.delta < 0 : k.delta > 0;
       const cls = k.delta === 0 ? 'neutral' : positive ? 'up' : 'down';
       const arrow = k.delta === 0 ? '' : k.delta > 0 ? '↑' : '↓';
       const dStr = k.abs
         ? (k.delta > 0 ? '+' : '') + fmtNum(k.delta)
-        : fmtDelta(k.delta);
+        : (k.delta > 0 ? '+' : '') + fmtPct(Math.abs(k.delta));
       deltaHtml = `<div class="kpi-delta ${cls}">${arrow} ${dStr} vs période préc.</div>`;
     }
-    return `<div class="kpi-card">
-      <div class="kpi-label">${k.label}</div>
-      <div class="kpi-value">${k.val}</div>
-      ${deltaHtml}
-    </div>`;
+    return `<div class="kpi-card"><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.val}</div>${deltaHtml}</div>`;
   }).join('');
 }
 
@@ -535,8 +295,7 @@ function renderCharts(dailyData) {
     const m = calcMetrics(r);
     return m.ctor != null ? Math.round(m.ctor * 1000) / 10 : null;
   });
-
-  const chartDefaults = {
+  const opts = {
     responsive: true, maintainAspectRatio: false,
     plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.parsed.y != null ? c.parsed.y.toFixed(1) + ' %' : '—' } } },
     scales: {
@@ -544,20 +303,17 @@ function renderCharts(dailyData) {
       y: { ticks: { callback: v => v + ' %', font: { size: 11 }, color: '#9b9b96' }, grid: { color: 'rgba(0,0,0,0.05)' } }
     }
   };
-
   if (chartOpen) chartOpen.destroy();
   if (chartCtor) chartCtor.destroy();
-
   chartOpen = new Chart(document.getElementById('chart-open'), {
     type: 'line',
     data: { labels, datasets: [{ data: openRates, borderColor: '#185FA5', backgroundColor: 'rgba(24,95,165,0.07)', borderWidth: 2, pointRadius: 2, tension: 0.3, fill: true, spanGaps: true }] },
-    options: chartDefaults
+    options: opts
   });
-
   chartCtor = new Chart(document.getElementById('chart-ctor'), {
     type: 'line',
     data: { labels, datasets: [{ data: ctorRates, borderColor: '#3B6D11', backgroundColor: 'rgba(59,109,17,0.07)', borderWidth: 2, pointRadius: 2, tension: 0.3, fill: true, spanGaps: true }] },
-    options: chartDefaults
+    options: opts
   });
 }
 
@@ -568,15 +324,14 @@ function renderTable(rows) {
 
   head.innerHTML = '<tr>' + columns.map(c => {
     const sorted = c.key === sortCol;
-    const arrow = sorted ? (sortDir === 1 ? '↑' : '↓') : '';
-    return `<th data-key="${c.key}" class="${sorted ? 'sorted' : ''}">${c.label}<span class="sort-arrow">${arrow}</span></th>`;
+    const arrow = sorted ? (sortDir === 1 ? ' ↑' : ' ↓') : '';
+    return `<th data-key="${c.key}" class="${sorted ? 'sorted' : ''}">${c.label}${arrow}</th>`;
   }).join('') + '</tr>';
 
   head.querySelectorAll('th').forEach(th => {
     th.addEventListener('click', () => {
       const key = th.dataset.key;
-      if (sortCol === key) sortDir *= -1;
-      else { sortCol = key; sortDir = -1; }
+      if (sortCol === key) sortDir *= -1; else { sortCol = key; sortDir = -1; }
       renderTable(currentData);
     });
   });
@@ -588,13 +343,29 @@ function renderTable(rows) {
   });
 
   if (sorted.length === 0) {
-    body.innerHTML = '<tr><td colspan="' + columns.length + '" style="text-align:center;padding:40px;color:var(--text-muted)">Aucune donnée pour cette période</td></tr>';
+    body.innerHTML = `<tr><td colspan="${columns.length}" style="text-align:center;padding:40px;color:var(--text-muted)">Aucun tag trouvé pour cette période</td></tr>`;
     return;
   }
-
   body.innerHTML = sorted.map(row =>
     '<tr>' + columns.map(c => `<td class="${c.cls || ''}">${c.fmt(row[c.key])}</td>`).join('') + '</tr>'
   ).join('');
+}
+
+async function fetchTagsFromEvents(startDate, endDate) {
+  const tags = new Set();
+  let offset = 0;
+  const limit = 100;
+  let hasMore = true;
+  while (hasMore) {
+    const url = `/smtp/statistics/events?startDate=${startDate}&endDate=${endDate}&limit=${limit}&offset=${offset}`;
+    const data = await brevoGet(url);
+    const events = data.events || [];
+    events.forEach(e => { if (e.tag) tags.add(e.tag); });
+    if (events.length < limit) hasMore = false;
+    else offset += limit;
+    if (offset >= 500) break;
+  }
+  return Array.from(tags);
 }
 
 async function loadDashboard(startDate, endDate) {
@@ -607,21 +378,36 @@ async function loadDashboard(startDate, endDate) {
     document.getElementById('period-badge').textContent =
       new Date(startDate).toLocaleDateString('fr-FR') + ' → ' + new Date(endDate).toLocaleDateString('fr-FR');
 
-    const [globalCurrent, globalPrev, tags, daily] = await Promise.all([
-      fetchStats(startDate, endDate),
-      fetchStats(prev.start, prev.end),
-      fetchTags(startDate, endDate),
-      fetchDailyStats(startDate, endDate)
+    const [globalCurrent, globalPrev, daily] = await Promise.all([
+      brevoGet(`/smtp/statistics/aggregatedReport?startDate=${startDate}&endDate=${endDate}`),
+      brevoGet(`/smtp/statistics/aggregatedReport?startDate=${prev.start}&endDate=${prev.end}`),
+      brevoGet(`/smtp/statistics/reports?startDate=${startDate}&endDate=${endDate}&sort=asc`)
     ]);
 
     renderKPIs(globalCurrent, globalPrev);
     renderCharts(daily);
 
     let tagRows = [];
-    if (tags.length > 0) {
-      const tagStats = await Promise.all(tags.map(t => fetchStats(startDate, endDate, t).then(s => ({ ...calcMetrics(s), tag: t }))));
-      tagRows = tagStats;
+    try {
+      const tags = await fetchTagsFromEvents(startDate, endDate);
+      if (tags.length > 0) {
+        const tagStats = await Promise.all(
+          tags.map(t =>
+            brevoGet(`/smtp/statistics/aggregatedReport?startDate=${startDate}&endDate=${endDate}&tag=${encodeURIComponent(t)}`)
+              .then(s => ({ ...calcMetrics(s, t) }))
+          )
+        );
+        tagRows = tagStats;
+        document.getElementById('table-info').innerHTML = '';
+      } else {
+        document.getElementById('table-info').innerHTML =
+          `<div class="info-banner" style="margin:12px 16px">Aucun tag détecté sur cette période. Assure-toi que tes emails transactionnels sont bien tagués dans Brevo.</div>`;
+      }
+    } catch(e) {
+      document.getElementById('table-info').innerHTML =
+        `<div class="info-banner" style="margin:12px 16px">Détail par tag indisponible : ${e.message}</div>`;
     }
+
     currentData = tagRows;
     renderTable(tagRows);
 
@@ -640,11 +426,9 @@ function showDashboard(key, start, end) {
   document.getElementById('dashboard').style.display = 'block';
   document.getElementById('tb-start').value = start;
   document.getElementById('tb-end').value = end;
-  document.getElementById('header-sub').textContent = '';
   loadDashboard(start, end);
 }
 
-// INIT
 const saved = localStorage.getItem('brevo_apikey');
 const { start: defStart, end: defEnd } = defaultDates();
 document.getElementById('input-start').value = defStart;
@@ -654,8 +438,7 @@ document.getElementById('btn-connect').addEventListener('click', () => {
   const key = document.getElementById('input-apikey').value.trim();
   const start = document.getElementById('input-start').value;
   const end = document.getElementById('input-end').value;
-  if (!key) return;
-  if (!start || !end) { showError('Sélectionne une période.'); return; }
+  if (!key || !start || !end) return;
   localStorage.setItem('brevo_apikey', key);
   showDashboard(key, start, end);
 });
@@ -663,8 +446,7 @@ document.getElementById('btn-connect').addEventListener('click', () => {
 document.getElementById('btn-reload').addEventListener('click', () => {
   const start = document.getElementById('tb-start').value;
   const end = document.getElementById('tb-end').value;
-  if (!start || !end) return;
-  loadDashboard(start, end);
+  if (start && end) loadDashboard(start, end);
 });
 
 document.getElementById('btn-reset').addEventListener('click', () => {
