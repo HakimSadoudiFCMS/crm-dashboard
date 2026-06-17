@@ -265,7 +265,7 @@ function renderKPIs(current, previous) {
 
   const rows = [
     {
-      title: 'Performance d'envoi',
+      title: "Performance d'envoi",
       kpis: [
         { label: 'Envoyés',          val: fmtNum(cm.requests),    delta: pm ? cm.requests - pm.requests : null,       abs: true },
         { label: 'Tx délivrabilité', val: fmtPct(cm.delivRate),   delta: pm ? cm.delivRate - pm.delivRate : null },
