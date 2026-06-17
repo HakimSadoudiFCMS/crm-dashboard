@@ -351,16 +351,19 @@ function renderTable(rows) {
   ).join('');
 }
 
+const SENDER_FILTER = 'offres@alertes.cadremploi.fr';
+const TAG_FILTER = 'CE';
+
 async function fetchTagsFromEvents(startDate, endDate) {
   const tags = new Set();
   let offset = 0;
   const limit = 100;
   let hasMore = true;
   while (hasMore) {
-    const url = `/smtp/statistics/events?startDate=${startDate}&endDate=${endDate}&limit=${limit}&offset=${offset}`;
+    let url = `/smtp/statistics/events?startDate=${startDate}&endDate=${endDate}&limit=${limit}&offset=${offset}&email=${encodeURIComponent(SENDER_FILTER)}`;
     const data = await brevoGet(url);
     const events = data.events || [];
-    events.forEach(e => { if (e.tag) tags.add(e.tag); });
+    events.forEach(e => { if (e.tag && e.tag.includes(TAG_FILTER)) tags.add(e.tag); });
     if (events.length < limit) hasMore = false;
     else offset += limit;
     if (offset >= 500) break;
@@ -378,10 +381,12 @@ async function loadDashboard(startDate, endDate) {
     document.getElementById('period-badge').textContent =
       new Date(startDate).toLocaleDateString('fr-FR') + ' → ' + new Date(endDate).toLocaleDateString('fr-FR');
 
+    const senderParam = `&sender=${encodeURIComponent(SENDER_FILTER)}`;
+
     const [globalCurrent, globalPrev, daily] = await Promise.all([
-      brevoGet(`/smtp/statistics/aggregatedReport?startDate=${startDate}&endDate=${endDate}`),
-      brevoGet(`/smtp/statistics/aggregatedReport?startDate=${prev.start}&endDate=${prev.end}`),
-      brevoGet(`/smtp/statistics/reports?startDate=${startDate}&endDate=${endDate}&sort=asc`)
+      brevoGet(`/smtp/statistics/aggregatedReport?startDate=${startDate}&endDate=${endDate}${senderParam}`),
+      brevoGet(`/smtp/statistics/aggregatedReport?startDate=${prev.start}&endDate=${prev.end}${senderParam}`),
+      brevoGet(`/smtp/statistics/reports?startDate=${startDate}&endDate=${endDate}&sort=asc${senderParam}`)
     ]);
 
     renderKPIs(globalCurrent, globalPrev);
@@ -393,7 +398,7 @@ async function loadDashboard(startDate, endDate) {
       if (tags.length > 0) {
         const tagStats = await Promise.all(
           tags.map(t =>
-            brevoGet(`/smtp/statistics/aggregatedReport?startDate=${startDate}&endDate=${endDate}&tag=${encodeURIComponent(t)}`)
+            brevoGet(`/smtp/statistics/aggregatedReport?startDate=${startDate}&endDate=${endDate}&tag=${encodeURIComponent(t)}${senderParam}`)
               .then(s => ({ ...calcMetrics(s, t) }))
           )
         );
