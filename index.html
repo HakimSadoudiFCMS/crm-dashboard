@@ -445,18 +445,16 @@ async function loadDashboard(startDate, endDate) {
     document.getElementById('period-badge').textContent =
       new Date(startDate).toLocaleDateString('fr-FR') + ' → ' + new Date(endDate).toLocaleDateString('fr-FR');
 
-    const senderParam = `&sender=${encodeURIComponent(SENDER_FILTER)}`;
-
     const today = new Date();
     const ninetyStart = new Date(); ninetyStart.setDate(today.getDate() - 89);
     const d90Start = dateStr(ninetyStart);
     const d90End = dateStr(today);
 
     const [globalCurrent, globalPrev, daily, daily90] = await Promise.all([
-      brevoGet(`/smtp/statistics/aggregatedReport?startDate=${startDate}&endDate=${endDate}${senderParam}`),
-      brevoGet(`/smtp/statistics/aggregatedReport?startDate=${prev.start}&endDate=${prev.end}${senderParam}`),
-      brevoGet(`/smtp/statistics/reports?startDate=${startDate}&endDate=${endDate}&sort=asc${senderParam}`),
-      brevoGet(`/smtp/statistics/reports?startDate=${d90Start}&endDate=${d90End}&sort=asc${senderParam}`)
+      brevoGet(`/smtp/statistics/aggregatedReport?startDate=${startDate}&endDate=${endDate}`),
+      brevoGet(`/smtp/statistics/aggregatedReport?startDate=${prev.start}&endDate=${prev.end}`),
+      brevoGet(`/smtp/statistics/reports?startDate=${startDate}&endDate=${endDate}&sort=asc`),
+      brevoGet(`/smtp/statistics/reports?startDate=${d90Start}&endDate=${d90End}&sort=asc`)
     ]);
 
     renderKPIs(globalCurrent, globalPrev);
@@ -469,7 +467,7 @@ async function loadDashboard(startDate, endDate) {
       if (tags.length > 0) {
         const tagStats = await Promise.all(
           tags.map(t =>
-            brevoGet(`/smtp/statistics/aggregatedReport?startDate=${startDate}&endDate=${endDate}&tag=${encodeURIComponent(t)}${senderParam}`)
+            brevoGet(`/smtp/statistics/aggregatedReport?startDate=${startDate}&endDate=${endDate}&tag=${encodeURIComponent(t)}`)
               .then(s => ({ ...calcMetrics(s, t) }))
           )
         );
